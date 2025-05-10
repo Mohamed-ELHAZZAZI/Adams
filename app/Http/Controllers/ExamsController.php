@@ -49,7 +49,8 @@ class ExamsController extends Controller
     ];
 
     return response()->json([
-        'exams' => [$response]
+        'exam' => $response,
+        'success' => true
     ], 201);
 }
 
@@ -59,13 +60,24 @@ class ExamsController extends Controller
     /** @var \App\Models\Teacher $teacher */
     $teacher = Auth::user();
 
-    $course = Course::where(['C_id' => $course_id, 'teacher_id' => $teacher->id])
-        ->with(['exams.marks', 'exams.marks.student', 'students'])
+    $course = Course::where([
+            'C_id' => $course_id,
+            'teacher_id' => $teacher->id
+        ])
+        ->with([
+            'exams' => function ($query) {
+                $query->orderBy('exam_date', 'asc');
+            },
+            'exams.marks',
+            'exams.marks.student',
+            'students'
+        ])
         ->first();
 
     if (!$course) {
         return response()->json(['error' => 'Course not found or unauthorized'], 403);
     }
+
     $exams = $course->exams->map(function ($exam) use ($course) {
         return [
             'id' => $exam->id,
@@ -89,6 +101,7 @@ class ExamsController extends Controller
         'exams' => $exams
     ]);
 }
+
 
 public function setMark(Request $request)
 {

@@ -50,7 +50,11 @@
         :exam_info="exam_info"
         @closeExamInfo="exam_info = null"
     />
-    <CreateExam v-if="dipslayCreate" @closeCreate="dipslayCreate = false" />
+    <CreateExam
+        v-if="dipslayCreate"
+        @closeCreate="dipslayCreate = false"
+        @addExam="addExam"
+    />
 </template>
 
 <script setup>
@@ -69,6 +73,23 @@ store.dispatch("getExams", course_id).then((res) => {
     exams.value = res.exams;
 });
 const dipslayCreate = ref(false);
+
+const addExam = (exam) => {
+    exams.value.push(exam);
+    sortArrayByDate();
+};
+
+const sortArrayByDate = () => {
+    exams.value.sort((a, b) => {
+        const dateComparison = new Date(a.exam_date) - new Date(b.exam_date);
+
+        if (dateComparison !== 0) {
+            return dateComparison;
+        }
+
+        return b.start_time.localeCompare(a.start_time);
+    });
+};
 </script>
 
 <style></style>

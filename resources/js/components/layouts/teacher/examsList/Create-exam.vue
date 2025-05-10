@@ -81,7 +81,7 @@ const route = useRoute();
 const course_id = route.params.id;
 
 const props = defineProps(["course_id"]);
-const emits = defineEmits(["closeCreate", "addSession"]);
+const emits = defineEmits(["closeCreate", "addExam"]);
 const error = ref(null);
 const today = new Date();
 const minDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(
@@ -133,14 +133,13 @@ const handleSubmit = () => {
 
     error.value = null;
     store.dispatch("CreateExam", info.value).then((res) => {
-        console.log(res);
+        if (res.success) {
+            emits("addExam", res.exam);
 
-        // if (res.success) {
-        //     emits("addSession", res.classSession);
-        //     closeCreate();
-        // } else {
-        //     error.value = "An error has accured, please try again";
-        // }
+            closeCreate();
+        } else {
+            error.value = "An error has accured, please try again";
+        }
     });
 };
 </script>
