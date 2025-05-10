@@ -5,12 +5,13 @@ resources/js/components/layouts/teacher/classList/Class-studentendance.vue
     >
         <div
             class="bg-white w-[1000px] max-h-[900px] rounded-3xl shadow-xl p-5 px-7 relative flex flex-col gap-5"
+            id="exam-pdf-content"
         >
             <div
                 class="w-full h-10 mb-5 flex justify-between items-center border-b"
             >
                 <span class="font-semibold"> Exam info </span>
-                <button @click="closeExamInfo">
+                <button @click="closeExamInfo" class="no-print">
                     <CloseIcon width="20" height="20" />
                 </button>
             </div>
@@ -35,6 +36,12 @@ resources/js/components/layouts/teacher/classList/Class-studentendance.vue
                 class="justify-between flex border-b-2 border-primaryColor pb-1"
             >
                 <span>Students list</span>
+                <button
+                    @click="downloadPDF"
+                    class="bg-green-500 flex gap-2 px-3 rounded py-1 text-white items-center no-print"
+                >
+                    <DownloadIcon />
+                </button>
             </div>
             <div class="">
                 <ErrorComp
@@ -51,7 +58,10 @@ resources/js/components/layouts/teacher/classList/Class-studentendance.vue
                             <th scope="col" class="px-6 py-3">Full name</th>
                             <th scope="col" class="px-6 py-3">Status</th>
                             <th scope="col" class="px-6 py-3">current Grade</th>
-                            <th scope="col" class="px-6 py-3 text-center">
+                            <th
+                                scope="col"
+                                class="px-6 py-3 text-center no-print"
+                            >
                                 new Grade
                             </th>
                         </tr>
@@ -88,8 +98,8 @@ resources/js/components/layouts/teacher/classList/Class-studentendance.vue
                             <td class="px-6 py-4">
                                 <span
                                     v-if="student.mark !== null"
-                                    class="text-white px-2 py-1 rounded"
                                     :class="getStatusClass(student.mark)"
+                                    class="text-white px-2 py-1 rounded status"
                                 >
                                     {{ getStatusLabel(student.mark) }}
                                 </span>
@@ -111,7 +121,7 @@ resources/js/components/layouts/teacher/classList/Class-studentendance.vue
                                     -
                                 </span>
                             </td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 no-print">
                                 <input
                                     type="number"
                                     class="border py-1 outline-none rounded max-w-16 px-1"
@@ -119,7 +129,7 @@ resources/js/components/layouts/teacher/classList/Class-studentendance.vue
                                 />
                             </td>
 
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 no-print">
                                 <button
                                     @click="updateMark(student)"
                                     class="bg-primaryColor flex gap-2 px-3 rounded py-1 text-white items-center"
@@ -140,11 +150,15 @@ import { onMounted, ref } from "vue";
 import store from "../../../../store";
 import CloseIcon from "../../../icons/Close-icon.vue";
 import ErrorComp from "../../Error-comp.vue";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
+import DownloadIcon from "../../../icons/Download-icon.vue";
 const emits = defineEmits(["closeExamInfo", "changeValue"]);
 const props = defineProps(["exam_info"]);
 const exam = props.exam_info;
 const studentendance = ref([]);
 const error = ref(null);
+const setToDownload = ref(false);
 const closeExamInfo = () => {
     emits("closeExamInfo");
 };
@@ -186,6 +200,58 @@ const updateMark = async (student) => {
     } catch (err) {
         console.error(err);
         error.value = err.response?.data?.message || "Something went wrong.";
+    }
+};
+const downloadPDF = async () => {
+    try {
+        setToDownload.value = true;
+
+        const element = document.getElementById("exam-pdf-content");
+        if (!element) {
+            console.error("Element #exam-pdf-content not found.");
+            return;
+        }
+
+        const noPrintElements = [...element.querySelectorAll(".no-print")];
+        noPrintElements.forEach((el) => {
+            el.dataset.originalDisplay = el.style.display;
+            el.style.display = "none";
+        });
+
+        const statusElements = [...element.querySelectorAll(".status")];
+        const originalPadding = statusElements.map(
+            (el) => el.style.paddingBottom
+        );
+        statusElements.forEach((el) => {
+            el.style.paddingBottom = "20px";
+        });
+
+        await document.fonts.ready;
+
+        const canvas = await html2canvas(element, {
+            scale: 2,
+            useCORS: true,
+        });
+
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+        pdf.save("exam_info.pdf");
+
+        // Restore original styles
+        noPrintElements.forEach((el) => {
+            el.style.display = el.dataset.originalDisplay || "";
+        });
+        statusElements.forEach((el, i) => {
+            el.style.paddingBottom = originalPadding[i];
+        });
+    } catch (error) {
+        console.error("PDF generation failed:", error);
+    } finally {
+        setToDownload.value = false;
     }
 };
 </script>
