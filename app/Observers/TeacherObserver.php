@@ -16,7 +16,6 @@ class TeacherObserver
      */
     public function created(Teacher $teacher): void
     {
-
         $temporaryPassword = Str::random(10);
 
         // Hash the password and update the teacher's record
