@@ -8,7 +8,7 @@
             <div
                 class="w-full h-10 mb-5 flex justify-between items-center border-b"
             >
-                <span class="font-semibold"> Add class </span>
+                <span class="font-semibold"> Class Info </span>
                 <button @click.prevent="closeAttendaceInfo">
                     <CloseIcon width="20" height="20" />
                 </button>

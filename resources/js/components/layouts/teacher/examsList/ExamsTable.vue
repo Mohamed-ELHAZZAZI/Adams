@@ -35,6 +35,7 @@
                     <td class="px-6 py-4">{{ formatTime(exam.end_time) }}</td>
                     <td class="px-6 py-4">
                         <button
+                            @click="exam_info = exam"
                             class="text-gray-400 hover:underline hover:text-primaryHover px-1 font-semibold"
                         >
                             More
@@ -44,6 +45,11 @@
             </tbody>
         </table>
     </div>
+    <ExamInfo
+        v-if="exam_info"
+        :exam_info="exam_info"
+        @closeExamInfo="exam_info = null"
+    />
     <CreateExam v-if="dipslayCreate" @closeCreate="dipslayCreate = false" />
 </template>
 
@@ -54,9 +60,11 @@ import CreateExam from "./Create-exam.vue";
 import { useRoute } from "vue-router";
 import store from "../../../../store";
 import { formatTime } from "../../../../functions/Helpers";
+import ExamInfo from "./Exam-info.vue";
 const route = useRoute();
 const course_id = route.params.id;
 const exams = ref([]);
+const exam_info = ref(null);
 store.dispatch("getExams", course_id).then((res) => {
     exams.value = res.exams;
 });

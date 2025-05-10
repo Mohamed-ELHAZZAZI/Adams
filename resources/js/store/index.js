@@ -145,11 +145,14 @@ const store = createStore({
             });
         },
         getExams: ({ commit }, course_id) => {
-            return axiosClient
-                .get("exams/get/" + course_id)
-                .then((res) => {
-                    return res.data;
-                });
+            return axiosClient.get("exams/get/" + course_id).then((res) => {
+                return res.data;
+            });
+        },
+        setMark: ({ commit }, info) => {
+            return axiosClient.post("mark/set", info).then((res) => {
+                return res.data;
+            });
         },
     },
     mutations: {

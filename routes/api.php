@@ -41,7 +41,7 @@ Route::middleware(['auth:sanctum', 'teacher'])->group(function () {
     Route::post('attendance/update', [AttendanceController::class, 'changeStatus']);
     Route::post('exam/create', [ExamsController::class, 'create']);
     Route::get('exams/get/{course_id}', [ExamsController::class, 'get']);
-    
+    Route::post('mark/set',[ExamsController::class, 'setMark']);
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
