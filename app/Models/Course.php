@@ -44,4 +44,9 @@ class Course extends Model
     {
         return $this->hasMany(ClassSession::class);
     }
+
+    public function exams()
+    {
+        return $this->hasMany(Exam::class);
+    }
 }

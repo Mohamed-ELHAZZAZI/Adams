@@ -139,6 +139,18 @@ const store = createStore({
                 return res.data;
             });
         },
+        CreateExam: ({ commit }, data) => {
+            return axiosClient.post("exam/create", data).then((res) => {
+                return res.data;
+            });
+        },
+        getExams: ({ commit }, course_id) => {
+            return axiosClient
+                .get("exams/get/" + course_id)
+                .then((res) => {
+                    return res.data;
+                });
+        },
     },
     mutations: {
         setUser: (state, data) => {

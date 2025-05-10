@@ -73,6 +73,7 @@ import store from "../../../../store";
 import AddIcon from "../../../icons/Add-icon.vue";
 import SuccessComp from "../../Success-comp.vue";
 import SessionInfo from "./Class-Attendance.vue";
+import { formatTime } from "../../../../functions/Helpers";
 defineProps(["updateAttendance"]);
 
 const route = useRoute();
@@ -87,14 +88,6 @@ store.dispatch("getClassSessions", course_id).then((res) => {
 });
 
 const dipslayCreate = ref(false);
-
-const formatTime = (time) => {
-    const date = new Date(`0000-01-01T${time}Z`);
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-
-    return `${hours}:${minutes}`;
-};
 
 const addSession = (session) => {
     displaySuccess.value = true;

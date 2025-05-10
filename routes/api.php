@@ -6,6 +6,7 @@ use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\ClassSessionController;
 use App\Http\Controllers\CountriesController;
 use App\Http\Controllers\CoursesController;
+use App\Http\Controllers\ExamsController;
 use App\Http\Controllers\MajorsController;
 use App\Http\Controllers\StudentsController;
 use App\Http\Controllers\TeachersController;
@@ -35,9 +36,12 @@ Route::middleware(['auth:sanctum', 'teacher'])->group(function () {
 
     Route::post('class-session/create', [ClassSessionController::class, 'create']);
     Route::get('class-session/get/{course_id}', [ClassSessionController::class, 'get']);
-
-    ROute::get('attendance/get/{class_id}', [AttendanceController::class, 'get']);
-    ROute::post('attendance/update', [AttendanceController::class, 'changeStatus']);
+    
+    Route::get('attendance/get/{class_id}', [AttendanceController::class, 'get']);
+    Route::post('attendance/update', [AttendanceController::class, 'changeStatus']);
+    Route::post('exam/create', [ExamsController::class, 'create']);
+    Route::get('exams/get/{course_id}', [ExamsController::class, 'get']);
+    
 });
 
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {

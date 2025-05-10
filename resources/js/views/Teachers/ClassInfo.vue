@@ -1,7 +1,7 @@
 <template>
     <div class="w-full flex flex-col gap-6">
         <div
-            class="w-full h-12 grid grid-cols-2 rounded-md overflow-hidden border-b text-gray-700 uppercase bg-gray-50 shadow-md"
+            class="w-full h-12 grid grid-cols-3 rounded-md overflow-hidden border-b text-gray-700 uppercase bg-gray-50 shadow-md"
         >
             <div
                 @click="handleTab('schedule')"
@@ -21,6 +21,15 @@
             >
                 Students list ({{ students?.length }})
             </div>
+            <div
+                @click="handleTab('examList')"
+                :class="{
+                    'bg-primaryColor text-white': activeTab == 'examList',
+                }"
+                class="flex items-center justify-center cursor-pointer"
+            >
+                Exams
+            </div>
         </div>
         <div v-if="activeTab == 'sdtList'" class="overflow-x-auto">
             <StudentsTable :students="students" />
@@ -28,6 +37,10 @@
 
         <div v-if="activeTab == 'schedule'">
             <ScheduleTable :updateAttendance="updateAttendance" />
+        </div>
+
+        <div v-if="activeTab == 'examList'">
+            <ExamsTable />
         </div>
     </div>
 </template>
@@ -37,6 +50,7 @@ import { onMounted, ref } from "vue";
 import store from "../../store";
 import StudentsTable from "../../components/layouts/teacher/studentsList/Students-Table.vue";
 import ScheduleTable from "../../components/layouts/teacher/classList/Course-Schedule-Table.vue";
+import ExamsTable from "../../components/layouts/teacher/examsList/ExamsTable.vue";
 const props = defineProps(["id"]);
 const id = props.id;
 const activeTab = ref("schedule");
