@@ -3,41 +3,12 @@
         class="w-full min-h-16 bg-primaryColor pl-20 pr-6 grid grid-cols-2 text-white"
     >
         <ul class="flex items-centerS h-full text-lg text-white">
-            <li class="h-full flex items-center">
-                <a class="navBar-links" href="#">首页</a>
-            </li>
-            <li><a class="navBar-links" href="#">培养</a></li>
-            <li><a class="navBar-links" href="#">运行</a></li>
-            <li><a class="navBar-links" href="#">学籍</a></li>
-            <li><a class="navBar-links" href="#">成绩</a></li>
-            <li><a class="navBar-links" href="#">质量</a></li>
-            <li><a class="navBar-links" href="#">毕设</a></li>
             <li><a class="navBar-links" href="#">Panel</a></li>
         </ul>
         <div class="h-full w-full flex items-center gap-4">
-            <div class="relative max-w-[200px] ml-auto">
-                <SearchIcon
-                    fill="#fff"
-                    width="25"
-                    height="25"
-                    class="absolute top-1.5 left-2"
-                />
-                <input
-                    type="text"
-                    class="bg-primaryHover rounded-full h-9 outline-none pl-9 pr-4 w-full"
-                />
-            </div>
-            <button class="bg-primaryHover p-2 rounded-full">
-                <ThemeIcon width="20" height="20" fill="#fff" />
-            </button>
-            <div
-                class="bg-primaryHover w-36 h-9 rounded-full flex items-center px-4"
-            >
-                学生
-            </div>
             <div
                 @click.prevent="displayUserBox = !displayUserBox"
-                class="flex items-center gap-2 relative w-44 cursor-pointer"
+                class="flex items-center gap-2 relative w-44 cursor-pointer ml-auto"
             >
                 <img
                     :src="'../../../../storage/' + userInfo?.Picture"
